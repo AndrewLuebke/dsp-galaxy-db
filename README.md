@@ -100,3 +100,42 @@ star values are exactly f32-representable**, while 6.2 billion planet values are
 not. Planet-level sums are therefore the authoritative numbers. Relative error
 is ≤2⁻²⁴ (~6×10⁻⁸), so it does not affect rule thresholds — but anyone deriving
 totals from planets will not reproduce the stored star/galaxy columns exactly.
+
+## Want some of this data?
+
+The full dataset is ~1.8 TB, which is more than I can casually host — so right
+now it lives on my own hardware rather than anywhere public.
+
+**If you want a slice of it, ask.** Open an issue describing what you're after
+and I'll generate or extract it. Queries against the whole space are cheap now
+(a seed-range query is ~2.6 s regardless of width; a full 24.4B-row scan is
+~82 s), so most requests are minutes of work, not days. Things that are easy:
+
+- all galaxies matching some criteria (N O-type stars, a habitable count, a
+  minimum total of some ore, a particular planet type…)
+- the complete star and planet detail for a list of seeds
+- a whole column across the entire space (e.g. every galaxy's iron total)
+- aggregate or statistical questions — distributions, extremes, correlations
+
+**If enough people are interested, I'll host something properly.** The natural
+tiers, with measured sizes:
+
+| tier | size | contents |
+|---|---|---|
+| galaxy totals | ~5 GB | one row per seed: star-type and spectral counts, planet/habitable counts, all 14 vein totals |
+| star veins | ~150 GB | per-star totals |
+| planet detail | ~593 GB | per-planet vein amounts |
+| everything | ~1.8 TB | the above plus full orbital geometry, themes, gases |
+
+The galaxy tier is small enough to distribute without much thought, and answers
+a large share of the questions people actually ask. Say so in an issue if that
+would be useful to you and I'll look at putting it somewhere.
+
+## Upstream
+
+Optimisations and fixes developed here have been submitted back to
+[DoubleUTH/DSP-Seed-Finder](https://github.com/DoubleUTH/DSP-Seed-Finder):
+golden regression tests (#19), skipping the star-position walk for rules that
+don't read positions (#20, 3.0×), pruning actual-vein generation with an exact
+estimated upper bound (#21), and an exact integer accessor for vein totals whose
+`f32` return silently rounds above 2^24 (#22).
