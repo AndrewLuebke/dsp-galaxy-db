@@ -1,0 +1,21 @@
+# Generated data — NEVER commit. The dataset is ~1.8 TB.
+*.tsv
+*.tsv.*
+*.parquet
+*.parquet.*
+*.zst
+*.zstd
+*.log
+
+# Pipeline working dirs
+gchunks/
+incoming/
+det-audit/
+regen/
+parts/
+duckdb-tmp/
+
+# Local scratch
+*.tmp
+*.bak
+*.swp
